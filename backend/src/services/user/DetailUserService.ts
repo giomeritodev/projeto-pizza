@@ -1,7 +1,5 @@
 import { prisma } from "../../prisma"
 
-
-
 class DetailUserService {
     async execute(user_id: number) {
         try {
@@ -25,7 +23,6 @@ class DetailUserService {
         } catch (error) {
             throw new Error("Usuário não encontrado.")
         }
-
     }
 }
 
