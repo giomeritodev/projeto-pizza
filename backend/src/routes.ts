@@ -22,6 +22,8 @@ import { listProductsByCategorySchema } from "./schemas/listProductsByCategorySc
 import { CreateOrderController } from "./controllers/order/CreateOrderController"
 import { createOrderSchema } from "./schemas/createOrderSchema"
 import { ListOrderController } from "./controllers/order/ListOrderController"
+import { AddItemOrderController } from "./controllers/order/AddItemOrderController"
+import { addItemOrderSchema } from "./schemas/addItemOrderSchema"
 
 const router = Router()
 const upload = multer(uploadConfig)
@@ -44,6 +46,10 @@ router.get("/category/product", isAuthenticated, validateSchema(listProductsByCa
 //Rotas de Orders
 router.post("/order", isAuthenticated, validateSchema(createOrderSchema), new CreateOrderController().handle)
 router.get("/orders", isAuthenticated, new ListOrderController().handle)
+
+
+//Adicionar items a uma order
+router.post("/order/add", isAuthenticated, validateSchema(addItemOrderSchema), new AddItemOrderController().handle)
 
 
 export { router }
