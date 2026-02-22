@@ -16,7 +16,7 @@ class CreateProductController {
             name: name,
             price: parseInt(price), //Converte string para int para receber o valor em centavos
             description: description,
-            category_id: category_id,
+            category_id: parseInt(category_id),
             imagemBuffer: req.file.buffer,
             imageName: req.file.originalname
         })

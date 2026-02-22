@@ -12,6 +12,9 @@ import { ListCategoryController } from "./controllers/category/ListCategoryContr
 import { isAdmin } from "./middlewares/isAdmin"
 import { createCategorySchema } from "./schemas/categorySchema"
 import { CreateProductController } from "./controllers/product/CreateProductController"
+import { createProductSchema } from "./schemas/productSchema"
+import { ListProductController } from "./controllers/product/ListProductController"
+import { listProductSchema } from "./schemas/listProductSchema"
 
 const router = Router()
 const upload = multer(uploadConfig)
@@ -26,6 +29,7 @@ router.post("/category", isAuthenticated, isAdmin, validateSchema(createCategory
 router.get("/category", isAuthenticated, new ListCategoryController().handle)
 
 //Rotas de Produtos
-router.post("/product", isAuthenticated, isAdmin, upload.single("file"), new CreateProductController().handle)
+router.post("/product", isAuthenticated, isAdmin, upload.single("file"), validateSchema(createProductSchema), new CreateProductController().handle)
+router.get("/products", isAuthenticated, validateSchema(listProductSchema), new ListProductController().handle)
 
 export { router }

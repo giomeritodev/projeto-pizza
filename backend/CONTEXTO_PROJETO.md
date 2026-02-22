@@ -12,6 +12,8 @@ Este documento descreve a arquitetura, organização, endpoints, dependências e
 - GET /me — Detalhes do usuário logado (Requer `isAuthenticated`)
 - POST /category — Cria categoria (Requer `isAuthenticated` e `isAdmin`)
 - GET /category — Lista categorias (Requer `isAuthenticated`)
+- POST /product — Cria produto com upload de banner (Requer `isAuthenticated`, `isAdmin` e envio de arquivo via multipart/form-data)
+- GET /products — Lista produtos com filtro por disabled (Requer `isAuthenticated`, query param: `disabled` → true/false, default: false)
 
 Arquivo de rotas: `src/routes.ts`
 
@@ -43,14 +45,61 @@ DevDependencies relevantes:
 
 **Modelagem do banco (Prisma)**
 - Banco: SQLite (datasource em `prisma/schema.prisma`)
-- Models principais:
-  - `User` (id, name, email(unique), password, role(enum Role {STAFF, ADMIN}), createdAt, updatedAt)
-  - `Category` (id, name, createdAt, updatedAt, products[])
-  - `Product` (id, name, price [inteiro em centavos], description, banner, disabled, category relation)
-  - `Order` (id, table, status, draft, name?, items[])
-  - `Item` (id, amount, order relation, product relation)
+- Enum:
+  - `Role` — STAFF, ADMIN
 
-Observações: o campo `price` é inteiro (centavos). Relações usam `onDelete: Cascade` para integridade.
+- Models:
+  
+  **User**
+  - `id` (Int, @id, autoincrement)
+  - `name` (String)
+  - `email` (String, @unique)
+  - `password` (String)
+  - `role` (Role, @default(STAFF))
+  - `createdAt` (DateTime, @default(now()))
+  - `updatedAt` (DateTime, @updatedAt)
+  
+  **Category**
+  - `id` (Int, @id, autoincrement)
+  - `name` (String)
+  - `createdAt` (DateTime, @default(now()))
+  - `updatedAt` (DateTime, @updatedAt)
+  - `products` (Product[], relação 1-N)
+  
+  **Product**
+  - `id` (Int, @id, autoincrement)
+  - `name` (String)
+  - `price` (Int, em centavos)
+  - `description` (String)
+  - `banner` (String, URL/path da imagem)
+  - `disabled` (Boolean, @default(false))
+  - `category_id` (Int, foreign key)
+  - `category` (Category, relação N-1 com onDelete: Cascade)
+  - `createdAt` (DateTime, @default(now()))
+  - `updatedAt` (DateTime, @updatedAt)
+  - `items` (Item[], relação 1-N)
+  
+  **Order**
+  - `id` (Int, @id, autoincrement)
+  - `table` (Int, número da mesa)
+  - `status` (Boolean, @default(false) → False = Pendente, True = Pronto)
+  - `draft` (Boolean, @default(true) → False = Rascunho, True = Pedido enviado para produção)
+  - `name` (String?, nome opcional)
+  - `createdAt` (DateTime, @default(now()))
+  - `updatedAt` (DateTime, @updatedAt)
+  - `items` (Item[], relação 1-N)
+  
+  **Item**
+  - `id` (Int, @id, autoincrement)
+  - `amount` (Int, quantidade)
+  - `order_id` (Int, foreign key)
+  - `order` (Order, relação N-1 com onDelete: Cascade)
+  - `product_id` (Int, foreign key)
+  - `product` (Product, relação N-1 com onDelete: Cascade)
+  - `createdAt` (DateTime, @default(now()))
+  - `updatedAt` (DateTime, @updatedAt)
+
+Observações: o campo `price` é inteiro (centavos). Relações usam `onDelete: Cascade` para integridade referencial.
 
 **Validação de entrada**
 - Biblioteca: `zod`.
