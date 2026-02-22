@@ -32,6 +32,8 @@ import { SendOrderController } from "./controllers/order/SendOrderController"
 import { sendOrderSchema } from "./schemas/sendOrderSchema"
 import { FinishOrderController } from "./controllers/order/FinishOrderController"
 import { finishOrderSchema } from "./schemas/finishOrderSchema"
+import { DeleteOrderController } from "./controllers/order/DeleteOrderController"
+import { deleteOrderSchema } from "./schemas/deleteOrderSchema"
 
 const router = Router()
 const upload = multer(uploadConfig)
@@ -54,7 +56,7 @@ router.get("/category/product", isAuthenticated, validateSchema(listProductsByCa
 //Rotas de Orders
 router.post("/order", isAuthenticated, validateSchema(createOrderSchema), new CreateOrderController().handle)
 router.get("/orders", isAuthenticated, new ListOrderController().handle)
-
+router.delete("/order", isAuthenticated, validateSchema(deleteOrderSchema), new DeleteOrderController().handle)
 
 //Adicionar items a uma order
 router.post("/order/add", isAuthenticated, validateSchema(addItemOrderSchema), new AddItemOrderController().handle)
@@ -65,6 +67,8 @@ router.get("/order/detail", isAuthenticated, validateSchema(orderDetailSchema), 
 
 router.put("/order/send", isAuthenticated, validateSchema(sendOrderSchema), new SendOrderController().handle)
 router.put("/order/finish", isAuthenticated, validateSchema(finishOrderSchema), new FinishOrderController().handle)
+
+
 
 
 export { router }
