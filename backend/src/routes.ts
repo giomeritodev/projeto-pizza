@@ -15,6 +15,10 @@ import { CreateProductController } from "./controllers/product/CreateProductCont
 import { createProductSchema } from "./schemas/productSchema"
 import { ListProductController } from "./controllers/product/ListProductController"
 import { listProductSchema } from "./schemas/listProductSchema"
+import { DeleteProductController } from "./controllers/product/DeleteProductController"
+import { deleteProductSchema } from "./schemas/deleteProductSchema"
+import { ListProductsByCategoryController } from "./controllers/product/ListProductsByCategoryController"
+import { listProductsByCategorySchema } from "./schemas/listProductsByCategorySchema"
 
 const router = Router()
 const upload = multer(uploadConfig)
@@ -31,5 +35,7 @@ router.get("/category", isAuthenticated, new ListCategoryController().handle)
 //Rotas de Produtos
 router.post("/product", isAuthenticated, isAdmin, upload.single("file"), validateSchema(createProductSchema), new CreateProductController().handle)
 router.get("/products", isAuthenticated, validateSchema(listProductSchema), new ListProductController().handle)
+router.delete("/product/:id", isAuthenticated, isAdmin, validateSchema(deleteProductSchema), new DeleteProductController().handle)
+router.get("/category/product", isAuthenticated, validateSchema(listProductsByCategorySchema), new ListProductsByCategoryController().handle)
 
 export { router }

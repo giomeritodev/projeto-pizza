@@ -14,6 +14,8 @@ Este documento descreve a arquitetura, organização, endpoints, dependências e
 - GET /category — Lista categorias (Requer `isAuthenticated`)
 - POST /product — Cria produto com upload de banner (Requer `isAuthenticated`, `isAdmin` e envio de arquivo via multipart/form-data)
 - GET /products — Lista produtos com filtro por disabled (Requer `isAuthenticated`, query param: `disabled` → true/false, default: false)
+- DELETE /product/:id — Deleta um produto pelo ID (Requer `isAuthenticated` e `isAdmin`, path param: `id`)
+- GET /category/product — Lista produtos de uma categoria específica (Requer `isAuthenticated`, query param: `category_id` → number, retorna apenas produtos habilitados)
 
 Arquivo de rotas: `src/routes.ts`
 
