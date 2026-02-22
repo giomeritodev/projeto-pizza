@@ -26,6 +26,8 @@ import { AddItemOrderController } from "./controllers/order/AddItemOrderControll
 import { addItemOrderSchema } from "./schemas/addItemOrderSchema"
 import { RemoveItemOrderController } from "./controllers/order/RemoveItemOrderController"
 import { removeItemOrderSchema } from "./schemas/removeItemOrderSchema"
+import { OrderDetailController } from "./controllers/order/OrderDetailController"
+import { orderDetailSchema } from "./schemas/orderDetailSchema"
 
 const router = Router()
 const upload = multer(uploadConfig)
@@ -53,5 +55,8 @@ router.get("/orders", isAuthenticated, new ListOrderController().handle)
 //Adicionar items a uma order
 router.post("/order/add", isAuthenticated, validateSchema(addItemOrderSchema), new AddItemOrderController().handle)
 router.delete("/order/remove", isAuthenticated, validateSchema(removeItemOrderSchema), new RemoveItemOrderController().handle)
+
+//Detalhes de uma Order
+router.get("/order/detail", isAuthenticated, validateSchema(orderDetailSchema), new OrderDetailController().handle)
 
 export { router }

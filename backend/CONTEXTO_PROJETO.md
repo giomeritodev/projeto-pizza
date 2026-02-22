@@ -18,6 +18,7 @@ Este documento descreve a arquitetura, organização, endpoints, dependências e
 - GET /category/product — Lista produtos de uma categoria específica (Requer `isAuthenticated`, query param: `category_id` → number, retorna apenas produtos habilitados)
  - POST /order — Cria um pedido (Requer `isAuthenticated`, body: `table` (int), `name` (string))
  - DELETE /order/remove — Remove um item de uma order (Requer `isAuthenticated`, query param: `item_id` → number, valida existência antes de deletar)
+ - GET /order/detail — Consulta detalhes de uma order específica (Requer `isAuthenticated`, query param: `order_id` → number, retorna order com todos os seus items e dados de produtos)
 
 **Organização de pastas (resumo)**
 - src/
