@@ -1,6 +1,7 @@
 "use server"
 import { apiClient } from "@/lib/api";
-import { User } from "@/lib/types";
+import { setToken } from "@/lib/auth";
+import { User, AuthResponse } from "@/lib/types";
 
 export async function registerUser(
     prevState: { success: boolean, error: string, redirectTo?: string } | null,
@@ -31,3 +32,40 @@ export async function registerUser(
         return { success: true, error: "Erro ao criar conta" };
     }
 }
+
+
+export async function loaginAction(
+    prevState: { success: boolean, error: string, redirectTo?: string } | null,
+    formData: FormData
+) {
+    try {
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        const data = {
+            email: email,
+            password: password
+        }
+
+        const response = await apiClient<AuthResponse>("/session", {
+            method: "POST",
+            body: JSON.stringify(data),
+        })
+
+        //Salvando o token do usuário nos cookies para autenticação futura
+        await setToken(response.token);
+
+
+
+        return { success: true, error: "", redirectTo: "/dashboard" };
+    }
+    catch (error) {
+        console.log("Erro: ", error)
+        if (error instanceof Error) {
+            return { success: false, error: error.message };
+        }
+        return { success: false, error: "Erro ao acessar conta" };
+    }
+}
+
+
