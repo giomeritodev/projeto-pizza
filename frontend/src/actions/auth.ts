@@ -1,7 +1,8 @@
 "use server"
 import { apiClient } from "@/lib/api";
-import { setToken } from "@/lib/auth";
+import { removeToken, setToken } from "@/lib/auth";
 import { User, AuthResponse } from "@/lib/types";
+import { redirect } from "next/navigation";
 
 export async function registerUser(
     prevState: { success: boolean, error: string, redirectTo?: string } | null,
@@ -68,4 +69,7 @@ export async function loaginAction(
     }
 }
 
-
+export async function logoutAction() {
+    await removeToken();
+    redirect("/login");
+}

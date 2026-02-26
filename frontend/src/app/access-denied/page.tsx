@@ -1,3 +1,5 @@
+import { logoutAction } from "@/actions/auth";
+import Link from "next/link";
 
 
 export default function AccessDenied() {
@@ -6,6 +8,7 @@ export default function AccessDenied() {
             <div className="w-full max-w-md text-center">
                 <h1 className="text-3xl font-bold text-white mb-4">Acesso Negado</h1>
                 <p className="text-gray-600 mb-6">Você não tem permissão para acessar esta página.</p>
+                <Link onClick={logoutAction} href="/login" className="text-brand-primary hover:underline">Voltar para o login</Link>
             </div>
         </div>
     );

@@ -1,3 +1,5 @@
+import { MobileSidebar } from "@/components/dashboard/mobile-siderbar"
+import { Sidebar } from "@/components/dashboard/sidebar"
 import { requireAdmin } from "@/lib/auth"
 
 export default async function DashboardLayout({
@@ -7,8 +9,18 @@ export default async function DashboardLayout({
 }) {
     const user = await requireAdmin()
     return (
-        <div>
-            {children}
+        <div className="flex h-screen overflow-hidden text-white">
+            {/*Siderbar DASKTOP*/}
+            <Sidebar userName={user.name} />
+
+            <div className="flex flex-1 flex-col overflow-hidden">
+                {/*Header mobile*/}
+                <MobileSidebar />
+
+                <main className="flex-1 overflow-y-auto bg-app-background">
+                    <div className="container max-w-full px-4 py-6">{children}</div>
+                </main>
+            </div>
         </div>
     )
 }
