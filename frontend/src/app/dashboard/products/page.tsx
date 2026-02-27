@@ -5,7 +5,6 @@ import { getToken } from "@/lib/auth"
 import { Product, Category } from "@/lib/types";
 import { Image } from "lucide-react";
 
-
 export default async function Products() {
     const token = await getToken();
     const products = await apiClient<Product[]>("/products", {
@@ -16,7 +15,14 @@ export default async function Products() {
         token: token
     })
 
+    // const formatPrice = (price: number) => {
+    //     return new Intl.NumberFormat("pt-BR", {
+    //         style: "currency",
+    //         currency: "BRL"
+    //     }).format(price / 100)
+    // }
     return (
+
         <div className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -30,6 +36,15 @@ export default async function Products() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {products.map(product => (
                         <Card key={product.id} className="bg-app-card border-app-border transition-shadow hover:shadow-md text-white">
+                            {/* <div className="relative w-full h-48">
+                                <Image
+                                    src={`${product.banner_url}`}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100w, (max-width: 1200px) 50vw, 33vw"
+                                />
+                            </div> */}
                             <CardHeader>
                                 <CardTitle className="gap-2 flex items-center text-base md:text-lg">
                                     <Image className="w-5 h-5" />

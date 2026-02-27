@@ -3,22 +3,41 @@
 Este documento descreve a arquitetura, organização, endpoints, dependências e principais decisões do backend.
 
 **Arquitetura**
-- Padrão: Rotas -> Controller -> Services -> Banco de Dados
+- Padrão: Rotas → Controller → Services → Banco de Dados (Prisma)
 - Fluxo: a rota recebe a requisição, o `Controller` extrai dados e chama o `Service`. O `Service` contém a lógica de negócio, comunica com o Prisma (BD) e devolve o resultado para o `Controller`, que responde ao cliente.
+- Controllers são finos: validam apenas pré-condições mínimas e tratam erros do service. Services encapsulam operações sobre o banco e regras (por exemplo, `CreateProductService`, `AddItemOrderService`).
 
-**Endpoints principais**
-- POST /users — Cria usuário (Rota pública)
-- POST /session — Autenticação / login (Rota pública)
-- GET /me — Detalhes do usuário logado (Requer `isAuthenticated`)
-- POST /category — Cria categoria (Requer `isAuthenticated` e `isAdmin`)
-- GET /category — Lista categorias (Requer `isAuthenticated`)
-- POST /product — Cria produto com upload de banner (Requer `isAuthenticated`, `isAdmin` e envio de arquivo via multipart/form-data)
-- GET /products — Lista produtos com filtro por disabled (Requer `isAuthenticated`, query param: `disabled` → true/false, default: false)
-- DELETE /product/:id — Deleta um produto pelo ID (Requer `isAuthenticated` e `isAdmin`, path param: `id`)
-- GET /category/product — Lista produtos de uma categoria específica (Requer `isAuthenticated`, query param: `category_id` → number, retorna apenas produtos habilitados)
- - POST /order — Cria um pedido (Requer `isAuthenticated`, body: `table` (int), `name` (string))
- - DELETE /order/remove — Remove um item de uma order (Requer `isAuthenticated`, query param: `item_id` → number, valida existência antes de deletar)
- - GET /order/detail — Consulta detalhes de uma order específica (Requer `isAuthenticated`, query param: `order_id` → number, retorna order com todos os seus items e dados de produtos)
+
+## Rotas / Endpoints
+O projeto expõe todos os recursos através de um conjunto de rotas REST organizadas e protegidas por middlewares. A tabela abaixo resume cada rota com os middlewares aplicados, o controller/service responsável e os parâmetros esperados.
+
+| Método | Rota | Middlewares | Controller → Service | Parâmetros & Descrição |
+|--------|------|-------------|----------------------|-------------------------|
+| POST   | `/users` | nenhum | `CreateUserController` → `CreateUserService` | Cria usuário. Body: `name`, `email`, `password` |
+| POST   | `/session` | nenhum | `AuthUserController` → `AuthUserService` | Login. Body: `email`, `password` → retorna JWT |
+| GET    | `/me` | `isAuthenticated` | `DetailUserController` → `DetailUserService` | Retorna dados do usuário logado. |
+| POST   | `/category` | `isAuthenticated`, `isAdmin` | `CreateCategoryController` → `CreateCategoryService` | Body: `name`. Cria categoria. |
+| GET    | `/category` | `isAuthenticated` | `ListCategoryController` → `ListCategoryService` | Lista todas as categorias. |
+| POST   | `/product` | `isAuthenticated`, `isAdmin`, upload(single 'file') | `CreateProductController` → `CreateProductService` | Cria produto. Body: `name`, `price`, `description`, `category_id`; multipart para arquivo `file`. |
+| GET    | `/products` | `isAuthenticated` | `ListProductController` → `ListProductService` | Query: `disabled` (true/false, default false). Lista produtos com filtro. |
+| DELETE | `/product/:id` | `isAuthenticated`, `isAdmin` | `DeleteProductController` → `DeleteProductService` | Path param `id`. Marca produto como deletado/habilita? (ou remove). |
+| GET    | `/category/product` | `isAuthenticated` | `ListProductsByCategoryController` → `ListProductsByCategoryService` | Query: `category_id`. Retorna produtos habilitados de uma categoria. |
+| POST   | `/order` | `isAuthenticated` | `CreateOrderController` → `CreateOrderService` | Body: `table`, `name?`. Cria pedido em rascunho. |
+| GET    | `/orders` | `isAuthenticated` | `ListOrderController` → `ListOrderService` | Lista pedidos (filtro interno por status/draft). |
+| DELETE | `/order` | `isAuthenticated` | `DeleteOrderController` → `DeleteOrderService` | Query: `order_id`. Exclui pedido completo. |
+| POST   | `/order/add` | `isAuthenticated` | `AddItemOrderController` → `AddItemOrderService` | Body: `order_id`, `product_id`, `amount`. Adiciona item a pedido. |
+| DELETE | `/order/remove` | `isAuthenticated` | `RemoveItemOrderController` → `RemoveItemOrderService` | Query: `item_id`. Remove item de pedido. |
+| GET    | `/order/detail` | `isAuthenticated` | `OrderDetailController` → `OrderDetailService` | Query: `order_id`. Retorna pedido com itens e produtos. |
+| PUT    | `/order/send` | `isAuthenticated` | `SendOrderController` → `SendOrderService` | Body: `order_id`. Marca pedido como enviado (`draft = false`). |
+| PUT    | `/order/finish` | `isAuthenticated` | `FinishOrderController` → `FinishOrderService` | Body: `order_id`. Marca pedido como pronto (`status = true`). |
+
+> **Observação:** todas as rotas que recebem dados via `body`, `query` ou `params` são validadas usando schemas Zod (`validateSchema`).
+
+**Observações**
+- Rota `/product` utiliza `multer` para upload e o arquivo é enviado ao Cloudinary via config em `src/config/cloudinary.ts`.
+- Rota `/orders` & `/order` referem-se a listagem e exclusão de pedidos, respectivamente.
+- Endpoints de order usam mix de query params e body conforme padrões existentes.
+
 
 **Organização de pastas (resumo)**
 - src/

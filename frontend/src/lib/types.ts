@@ -21,12 +21,12 @@ export interface Category {
     createdAt: string
 }
 export interface Product {
-     id: number;
-     name: string;
-     description: string | null;
-     price: number; // price in cents
-     banner_url?: string | null;
-     category_id: number;
-     createdAt: string;
-     disabled: boolean;
+    id: number;
+    name: string;
+    description: string | null;
+    price: number; // price in cents
+    banner_url?: string | null;
+    category_id: number;
+    createdAt: string;
+    disabled: boolean;
 }
