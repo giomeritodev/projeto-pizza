@@ -25,8 +25,10 @@ export interface Product {
     name: string;
     description: string | null;
     price: number; // price in cents
-    banner_url?: string | null;
+    banner?: string | null;
     category_id: number;
+    /** category relation returned by the API */
+    category?: Category;
     createdAt: string;
     disabled: boolean;
 }

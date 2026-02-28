@@ -27,7 +27,7 @@ class DeleteProductService {
                 }
             })
 
-            return { message: "Produto deletado/arqivado com sucesso" }
+            return { message: "Produto deletado/arquivado com sucesso" }
         } catch (error) {
             throw error
         }

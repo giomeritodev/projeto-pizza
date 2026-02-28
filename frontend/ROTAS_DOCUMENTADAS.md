@@ -13,7 +13,7 @@ o caminho, middlewares aplicados, controllers e serviços responsáveis, bem com
 | POST   | `/category` | `isAuthenticated`, `isAdmin` | `CreateCategoryController` → `CreateCategoryService` | Body: `name`. Cria nova categoria.
 | GET    | `/category` | `isAuthenticated` | `ListCategoryController` → `ListCategoryService` | Lista todas as categorias.
 | POST   | `/product` | `isAuthenticated`, `isAdmin`, upload single `file` | `CreateProductController` → `CreateProductService` | Cria produto. Body: `name`, `price` (int centavos), `description`, `category_id`; arquivo `file` enviado via multipart para banner.
-| GET    | `/products` | `isAuthenticated` | `ListProductController` → `ListProductService` | Query: `disabled` (bool). Lista produtos, padrão `false`.
+| GET    | `/products` | `isAuthenticated` | `ListProductController` → `ListProductService` | Query: `disabled` (bool). Lista produtos, padrão `false`. Cada item inclui a propriedade `category` com id/nome.
 | DELETE | `/product/:id` | `isAuthenticated`, `isAdmin` | `DeleteProductController` → `DeleteProductService` | Path param `id` (int). Remove produto.
 | GET    | `/category/product` | `isAuthenticated` | `ListProductsByCategoryController` → `ListProductsByCategoryService` | Query: `category_id` (int). Retorna produtos habilitados da categoria.
 | POST   | `/order` | `isAuthenticated` | `CreateOrderController` → `CreateOrderService` | Cria pedido. Body: `table` (int), `name?` (string opcional).

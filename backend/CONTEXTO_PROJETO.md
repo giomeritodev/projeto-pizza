@@ -19,7 +19,7 @@ O projeto expõe todos os recursos através de um conjunto de rotas REST organiz
 | POST   | `/category` | `isAuthenticated`, `isAdmin` | `CreateCategoryController` → `CreateCategoryService` | Body: `name`. Cria categoria. |
 | GET    | `/category` | `isAuthenticated` | `ListCategoryController` → `ListCategoryService` | Lista todas as categorias. |
 | POST   | `/product` | `isAuthenticated`, `isAdmin`, upload(single 'file') | `CreateProductController` → `CreateProductService` | Cria produto. Body: `name`, `price`, `description`, `category_id`; multipart para arquivo `file`. |
-| GET    | `/products` | `isAuthenticated` | `ListProductController` → `ListProductService` | Query: `disabled` (true/false, default false). Lista produtos com filtro. |
+| GET    | `/products` | `isAuthenticated` | `ListProductController` → `ListProductService` | Query: `disabled` (true/false, default false). Lista produtos com filtro. Cada item inclui o objeto `category` (id e nome). |
 | DELETE | `/product/:id` | `isAuthenticated`, `isAdmin` | `DeleteProductController` → `DeleteProductService` | Path param `id`. Marca produto como deletado/habilita? (ou remove). |
 | GET    | `/category/product` | `isAuthenticated` | `ListProductsByCategoryController` → `ListProductsByCategoryService` | Query: `category_id`. Retorna produtos habilitados de uma categoria. |
 | POST   | `/order` | `isAuthenticated` | `CreateOrderController` → `CreateOrderService` | Body: `table`, `name?`. Cria pedido em rascunho. |

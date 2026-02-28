@@ -30,6 +30,13 @@ class ListProductsByCategoryService {
                     description: true,
                     banner: true,
                     disabled: true,
+                    category_id: true,
+                    category: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    },
                     createdAt: true,
                 },
                 orderBy: {

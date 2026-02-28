@@ -32,3 +32,46 @@ export async function createProductAction(formData: FormData) {
     }
 
 }
+
+export async function listProductsAction(disabled?: boolean) {
+    const token = await getToken();
+
+    if (!token) {
+        throw new Error("Não autenticado");
+    }
+
+    const query = disabled !== undefined ? `?disabled=${disabled}` : "";
+    const products = await apiClient<Product[]>(`/products${query}`, {
+        token,
+        cache: "no-store"
+    });
+
+    return products;
+}
+
+export async function deleteProductAction(productId: number) {
+    try {
+        if (!productId) {
+            return { success: false, error: "ID do produto inválido" }
+        }
+
+        const token = await getToken();
+
+        if (!token) {
+            return { success: false, error: "Não autenticado" }
+        }
+
+        await apiClient(`/product/${productId}`, {
+            method: "DELETE",
+            token: token
+        })
+
+        revalidatePath("/dashboard/products");
+        return { success: true, error: "" }
+    } catch (error) {
+        if (error instanceof Error) {
+            return { success: false, error: error.message }
+        }
+        return { success: false, error: 'Erro ao deletar o produto' }
+    }
+}

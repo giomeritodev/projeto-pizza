@@ -19,22 +19,52 @@ interface Props {
 export function ProductForm({ categories }: Props) {
     const [open, setOpen] = useState(false)
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const [priceValue, setPriceValue] = useState("")
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
 
+
+    function convertBRLToCents(value: string): number {
+        const cleanValue = value.replace(/[R$\s]/g, "").replace(/\./g, "").replace(",", ".")
+        const reais = parseFloat(cleanValue) || 0
+
+        return Math.round(reais * 100)
+    }
+
     async function handleCreateProduct(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setIsLoading(true);
 
-        const formData = new FormData(e.currentTarget)
+        if (!imageFile) {
+            setIsLoading(false)
+            return;
+        }
+
+        const formData = new FormData();
+        const formElement = e.currentTarget;
+        const name = (formElement.elements.namedItem("name") as HTMLInputElement)?.value;
+        const description = (formElement.elements.namedItem("description") as HTMLInputElement)?.value;
+        const category_id = (formElement.elements.namedItem("category_id") as HTMLInputElement)?.value;
+        const priceInCents = convertBRLToCents(priceValue)
+
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("price", priceInCents.toString());
+        formData.append("category_id", category_id);
+        formData.append("file", imageFile);
+
+
+
+        // const formData = new FormData(e.currentTarget)
 
         // convert price to cents if provided as decimal
-        const rawPrice = formData.get('price')
-        if (rawPrice) {
-            const raw = String(rawPrice).replace(',', '.')
-            const cents = Math.round(Number(raw) * 100)
-            formData.set('price', String(cents))
-        }
+        // const rawPrice = formData.get('price')
+        // if (rawPrice) {
+        //     const raw = String(rawPrice).replace(',', '.')
+        //     const cents = Math.round(Number(raw) * 100)
+        //     formData.set('price', String(cents))
+        // }
 
         const result = await createProductAction(formData as FormData);
 
