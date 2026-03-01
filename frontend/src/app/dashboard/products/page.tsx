@@ -57,7 +57,7 @@ export default async function Products() {
                                 <CardTitle className="gap-2 flex items-center justify-between text-base md:text-lg">
                                     <div className="flex flex-row gap-2 items-center">
                                         <Package className="w-5 h-5" />
-                                        <span>{product.name}</span>
+                                        <span>{product.id} - {product.name}</span>
                                     </div>
                                     <DeleteButtonProduct productId={product.id} />
                                 </CardTitle>

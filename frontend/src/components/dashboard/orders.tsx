@@ -7,6 +7,7 @@ import { apiClient } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { FormatPrice } from "@/lib/format";
+import { OrderModal } from "./order-modal";
 
 interface OrdersProps {
     token: string;
@@ -15,6 +16,8 @@ interface OrdersProps {
 export function Orders({ token }: OrdersProps) {
     const [loading, setLoading] = useState(true)
     const [orders, setOrders] = useState<Order[]>([])
+    const [selectedOrder, setSelectedOrder] = useState<null | number>(null)
+
     const fetchOrders = async () => {
         try {
             const response = await apiClient<Order[]>("/orders?draft=false", {
@@ -113,6 +116,7 @@ export function Orders({ token }: OrdersProps) {
                                     <Button
                                         size="sm"
                                         className="bg-brand-primary hover:bg-brand-primary w-full xl:w-auto"
+                                        onClick={() => setSelectedOrder(order.id)}
                                     >
                                         <EyeIcon className="w-5 h-5" />
                                         Detalhes
@@ -123,7 +127,14 @@ export function Orders({ token }: OrdersProps) {
                     ))}
                 </div>
             )}
-
+            <OrderModal
+                orderId={selectedOrder}
+                onClose={async () => {
+                    setSelectedOrder(null)
+                    await fetchOrders();
+                }}
+                token={token}
+            />
         </div>
     )
 }    
