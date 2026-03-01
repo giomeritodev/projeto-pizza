@@ -32,3 +32,25 @@ export interface Product {
     createdAt: string;
     disabled: boolean;
 }
+
+export interface Items {
+    id: number;
+    amount: number;
+    product: {
+        id: number;
+        name: string;
+        price: number;
+        description: string;
+        banner: string;
+    }
+}
+
+export interface Order {
+    id: number;
+    table: number;
+    name?: string;
+    status: boolean; // false = produção, true = finalizado
+    draft: boolean; //true = rascunho, false = enviado para produção
+    createdAt: string;
+    items?: Items[]
+}
