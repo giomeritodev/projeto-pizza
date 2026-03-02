@@ -1,4 +1,4 @@
-import AsyncStorange from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 import { API_CONFIG } from "../config/api.config";
 
@@ -14,7 +14,7 @@ const api = axios.create({
 //Interceptor para adicionar o token e todas as requisições
 api.interceptors.request.use(
     async (config) => {
-        const token = await AsyncStorange.getItem("@token:visaosistemas");
+        const token = await AsyncStorage.getItem("@token:visaosistemas");
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
@@ -31,7 +31,7 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         if (error.response?.status === 401) {
-            await AsyncStorange.removeItem("@token:visaosistemas");
+            await AsyncStorage.removeItem("@token:visaosistemas");
         }
         return Promise.reject(error);
     }

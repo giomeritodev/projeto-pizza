@@ -3,7 +3,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, TouchableOpacity
 
 interface ButtonProps extends TouchableOpacityProps {
     title: string;
-    variant?: "primary" | "secundary";
+    variant?: "primary" | "secondary";
     loading?: boolean;
 }
 
