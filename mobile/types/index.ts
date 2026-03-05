@@ -27,7 +27,19 @@ export interface Product {
     price: number;
     category_id: number;
     createdAt: string;
-    category?: Category
+    category?: Category;
+    banner: string;
+    disabled: boolean
+}
+
+export interface Order {
+    id: number;
+    table: number;
+    name?: string;
+    draft: boolean;
+    status: boolean;
+    createdAt: string;
+    items?: Item[]
 }
 
 export interface Item {

@@ -1,15 +1,54 @@
-import { Button } from "@/components/button";
-import { Input } from "@/components/input";
+import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
 import { borderRadius, colors, fontSize, spacing } from "@/constants/theme";
 import { useAuth } from "@/contexts/AuthContext";
+import api from "@/services/api";
 import { StatusBar } from "expo-status-bar";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Order } from "@/types";
+import { useRouter } from "expo-router";
 
 
 export default function Dashboard() {
     const { signOut } = useAuth()
     const insets = useSafeAreaInsets();
+    const router = useRouter()
+
+    const [tableNumber, setTableNumber] = useState("")
+    const [loading, setLoading] = useState(false)
+
+    async function handleOpenTable() {
+        if (!tableNumber) {
+            Alert.alert("Atenção", "Digite um número da mesa válido")
+            return;
+        }
+        const table = parseInt(tableNumber)
+
+        // -> NaN
+        if (isNaN(table) || table <= 0) {
+            Alert.alert("Atenção", "Digite um número da mesa válido")
+            return;
+        }
+        try {
+            setLoading(true)
+
+            const response = await api.post<Order>("/order", {
+                table: table
+            })
+            router.push({
+                pathname: "/(authenticated)/order",
+                params: { table: response.data.table.toString(), order_id: response.data.id }
+            });
+
+            setTableNumber("")
+        } catch (error) {
+            console.log(error)
+            Alert.alert("Erro", "Falha ao abrir mesa, tente mais tarde")
+        }
+
+    }
 
     return (
         <View style={styles.container}>
@@ -41,10 +80,13 @@ export default function Dashboard() {
                             placeholder="Número da mesa"
                             style={styles.input}
                             placeholderTextColor={colors.gray}
+                            value={tableNumber}
+                            onChangeText={setTableNumber}
+                            keyboardType="numeric"
                         />
                         <Button
                             title="Abrir mesa"
-                            onPress={() => { }}
+                            onPress={handleOpenTable}
                         />
 
                     </View>
