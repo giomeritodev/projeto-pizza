@@ -1,12 +1,15 @@
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useState } from "react";
-import { Category, Product } from "@/types";
-import api from "@/services/api";
-import { colors, fontSize, spacing } from "@/constants/theme";
-import { Ionicons } from "@expo/vector-icons"
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Button } from "@/components/Button";
+import { OrderItem } from "@/components/Orderitem";
+import { QuantityControl } from "@/components/QuantityControl";
 import { Select } from "@/components/Select";
+import { colors, fontSize, spacing } from "@/constants/theme";
+import api from "@/services/api";
+import { Category, Item, Product } from "@/types";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Order() {
     const router = useRouter()
@@ -17,10 +20,13 @@ export default function Order() {
     }>();
     const [loadingCategory, setLoadingCategory] = useState(true)
     const [loadingProduct, setLoadingProduct] = useState(true)
+    const [loadingAddItem, setLoadingAddItem] = useState(false)
     const [categories, setCategories] = useState<Category[]>([])
     const [selectedCategory, setSelectedCategory] = useState("")
     const [selectedProduct, setSelectedProduct] = useState("")
     const [products, setProducts] = useState<Product[]>([])
+    const [quantity, setQuantity] = useState(1)
+    const [items, setItems] = useState<Item[]>([])
 
     useEffect(() => {
         async function loadDataCategory() {
@@ -63,6 +69,56 @@ export default function Order() {
         }
     }
 
+    async function handleAddItem() {
+        if (!selectedCategory || !selectedProduct) {
+            Alert.alert("Atenção", "Selecione categoria e produto para adicionar")
+            return
+        }
+
+        try {
+            setLoadingAddItem(true)
+            const response = await api.post<Item>("/order/add", {
+                order_id: Number(order_id),
+                product_id: Number(selectedProduct),
+                amount: quantity
+            })
+            setItems(prev => [...prev, response.data])
+            setSelectedCategory("")
+            setSelectedProduct("")
+            setQuantity(1)
+        } catch (error) {
+            console.log(error)
+            Alert.alert("Erro", "Falha ao adicionar item, tente novamente")
+        } finally {
+            setLoadingAddItem(false)
+        }
+    }
+
+    async function handleRemoveItem(item_id: number) {
+        try {
+            await api.delete("/order/remove", {
+                params: { item_id: item_id }
+
+            })
+
+            const updatedItems = items.filter(item => item.id !== item_id);
+            setItems(updatedItems);
+
+            Alert.alert("Item removido", "Seu item foi removido da mesa.")
+        } catch (error) {
+            console.log(error)
+            Alert.alert("Atencão", "Erro ao remover o item da mesa")
+        }
+    }
+
+    function handleAdvance() {
+        if (items.length === 0) return;
+        router.push({
+            pathname: "/(authenticated)/finish",
+            params: { order_id: order_id, table: table }
+        })
+    }
+
     if (loadingCategory) {
         return (
             <View style={styles.loadingContainer}>
@@ -84,13 +140,16 @@ export default function Order() {
                 </View>
             </View>
 
-            <ScrollView style={styles.scrollContent}>
+            <ScrollView
+                style={styles.scrollContent}
+                contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+            >
                 <Select
                     label="Categorias"
                     placeholder="Selecione a categoria..."
-                    options={categories.map(cat => ({
+                    options={categories.map((cat) => ({
                         label: cat.name,
-                        value: cat.id
+                        value: cat.id,
                     }))}
                     selectedValue={selectedCategory}
                     onValueChange={setSelectedCategory}
@@ -113,9 +172,53 @@ export default function Order() {
                         onValueChange={setSelectedProduct}
                     />
                 )}
+                {selectedProduct && (
+                    <View style={styles.quantitySection}>
+                        <Text style={styles.quantityLabel}>Quantidade</Text>
+                        <QuantityControl
+                            quantity={quantity}
+                            onIncrement={() => setQuantity(quantity + 1)}
+                            onDecrement={() => {
+                                if (quantity <= 1) {
+                                    setQuantity(1)
+                                    return;
+                                }
+                                setQuantity((quantity) => quantity - 1)
+                            }}
+                        />
+                    </View>
+                )}
+
+                {selectedProduct && (
+                    <Button
+                        title="Adicionar"
+                        onPress={handleAddItem}
+                        variant="secondary"
+                        loading={loadingAddItem}
+                        disabled={loadingAddItem}
+                    />
+                )}
+                {items.length > 0 && (
+                    <View style={styles.itemsSection}>
+                        <Text style={styles.itemsTitle}>Itens adicionados</Text>
+                        <View style={styles.itemsList}>
+                            {items.map((item) => (
+                                <OrderItem
+                                    item={item}
+                                    key={item.id}
+                                    onRemove={handleRemoveItem}
+                                />
+                            ))}
+                        </View>
+                    </View>
+                )}
+                {items.length > 0 && (
+                    <View style={styles.footer}>
+                        <Button title="Avançar" onPress={handleAdvance} />
+                    </View>
+                )}
 
             </ScrollView>
-
         </View>
     )
 }
@@ -155,6 +258,32 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         padding: spacing.lg,
-        gap: 14
+        gap: 14,
+    },
+    quantitySection: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingVertical: spacing.md,
+    },
+    quantityLabel: {
+        color: colors.primary,
+        fontSize: fontSize.lg,
+        fontWeight: "bold",
+    },
+    itemsSection: {
+        marginTop: spacing.xl,
+    },
+    itemsTitle: {
+        color: colors.primary,
+        fontWeight: "bold",
+        fontSize: fontSize.lg,
+        marginBottom: spacing.md,
+    },
+    itemsList: {
+        gap: spacing.sm,
+    },
+    footer: {
+        paddingTop: 24,
     }
 })
