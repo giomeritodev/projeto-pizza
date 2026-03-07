@@ -17,14 +17,16 @@ o caminho, middlewares aplicados, controllers e serviços responsáveis, bem com
 | DELETE | `/product/:id` | `isAuthenticated`, `isAdmin` | `DeleteProductController` → `DeleteProductService` | Path param `id` (int). Remove produto.
 | GET    | `/category/product` | `isAuthenticated` | `ListProductsByCategoryController` → `ListProductsByCategoryService` | Query: `category_id` (int). Retorna produtos habilitados da categoria.
 | POST   | `/order` | `isAuthenticated` | `CreateOrderController` → `CreateOrderService` | Cria pedido. Body: `table` (int), `name?` (string opcional).
-| GET    | `/orders` | `isAuthenticated` | `ListOrderController` → `ListOrderService` | Lista pedidos com estados internos (draft, status).
+| GET    | `/orders` | `isAuthenticated` | `ListOrderController` → `ListOrderService` | Lista pedidos com estados internos (draft, status) e permite query `payment=true/false` para filtrar por pagamento. |
 | DELETE | `/order` | `isAuthenticated` | `DeleteOrderController` → `DeleteOrderService` | Query: `order_id` (int). Exclui pedido.
 | POST   | `/order/add` | `isAuthenticated` | `AddItemOrderController` → `AddItemOrderService` | Adiciona item. Body: `order_id`, `product_id`, `amount`.
 | DELETE | `/order/remove` | `isAuthenticated` | `RemoveItemOrderController` → `RemoveItemOrderService` | Query: `item_id`. Remove item de pedido.
 | GET    | `/order/detail` | `isAuthenticated` | `OrderDetailController` → `OrderDetailService` | Query: `order_id`. Retorna pedido detalhado com itens e produtos.
 | PUT    | `/order/send` | `isAuthenticated` | `SendOrderController` → `SendOrderService` | Body: `order_id`. Marca pedido como enviado (`draft = false`).
 | PUT    | `/order/finish` | `isAuthenticated` | `FinishOrderController` → `FinishOrderService` | Body: `order_id`. Marca pedido como pronto (`status = true`).
-
+| PUT    | `/order/payment` | `isAuthenticated`, `isAdmin` | `UpdatePaymentController` → `UpdatePaymentOrderService` | Body: `order_id`, `payment` (boolean). Atualiza status de pagamento do pedido. |
+| GET    | `/orders/by-table` | `isAuthenticated` | `ListOrdersByTableController` → `ListOrdersByTableService` | Lista pedidos prontos agrupados por mesa com totais. |
+| PUT    | `/orders/payment/by-table` | `isAuthenticated`, `isAdmin` | `UpdatePaymentByTableController` → `UpdatePaymentByTableService` | Body: `table`, `payment` (boolean). Atualiza payment de todas as orders da mesa e retorna cupom. |
 > **Nota:** todos os endpoints têm validações de entrada implementadas com Zod
 > (`validateSchema`). Os campos obrigatórios e tipos são verificados antes de chegar
 > ao controller.

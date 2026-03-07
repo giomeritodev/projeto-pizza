@@ -51,6 +51,22 @@ export interface Order {
     name?: string;
     status: boolean; // false = produção, true = finalizado
     draft: boolean; //true = rascunho, false = enviado para produção
+    payment: boolean; // false = não pago, true = pago
     createdAt: string;
     items?: Items[]
+}
+
+export interface TableOrder {
+    table: number;
+    orders: Order[];
+    total: number;
+    items: Items[];
+}
+
+export interface ReceiptData {
+    table: number;
+    orders: Order[];
+    total: number;
+    payment: boolean;
+    timestamp: string;
 }

@@ -33,6 +33,7 @@ class FinishOrderService {
                     status: true,
                     name: true,
                     draft: true,
+                    payment: true,
                     createdAt: true,
                 }
             });

@@ -27,6 +27,7 @@ class OrderDetailService {
                     name: true,
                     status: true,
                     draft: true,
+                    payment: true,
                     createdAt: true,
                     updatedAt: true,
                     items: {

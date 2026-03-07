@@ -42,6 +42,7 @@ export type OrderMinAggregateOutputType = {
   status: boolean | null
   draft: boolean | null
   name: string | null
+  payment: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +53,7 @@ export type OrderMaxAggregateOutputType = {
   status: boolean | null
   draft: boolean | null
   name: string | null
+  payment: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +64,7 @@ export type OrderCountAggregateOutputType = {
   status: number
   draft: number
   name: number
+  payment: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -84,6 +87,7 @@ export type OrderMinAggregateInputType = {
   status?: true
   draft?: true
   name?: true
+  payment?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +98,7 @@ export type OrderMaxAggregateInputType = {
   status?: true
   draft?: true
   name?: true
+  payment?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -104,6 +109,7 @@ export type OrderCountAggregateInputType = {
   status?: true
   draft?: true
   name?: true
+  payment?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -201,6 +207,7 @@ export type OrderGroupByOutputType = {
   status: boolean
   draft: boolean
   name: string | null
+  payment: boolean
   createdAt: Date
   updatedAt: Date
   _count: OrderCountAggregateOutputType | null
@@ -234,6 +241,7 @@ export type OrderWhereInput = {
   status?: Prisma.BoolFilter<"Order"> | boolean
   draft?: Prisma.BoolFilter<"Order"> | boolean
   name?: Prisma.StringNullableFilter<"Order"> | string | null
+  payment?: Prisma.BoolFilter<"Order"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   items?: Prisma.ItemListRelationFilter
@@ -245,6 +253,7 @@ export type OrderOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   draft?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  payment?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   items?: Prisma.ItemOrderByRelationAggregateInput
@@ -259,6 +268,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.BoolFilter<"Order"> | boolean
   draft?: Prisma.BoolFilter<"Order"> | boolean
   name?: Prisma.StringNullableFilter<"Order"> | string | null
+  payment?: Prisma.BoolFilter<"Order"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   items?: Prisma.ItemListRelationFilter
@@ -270,6 +280,7 @@ export type OrderOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   draft?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  payment?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OrderCountOrderByAggregateInput
@@ -288,6 +299,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   status?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   draft?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   name?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  payment?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
 }
@@ -297,6 +309,7 @@ export type OrderCreateInput = {
   status?: boolean
   draft?: boolean
   name?: string | null
+  payment?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ItemCreateNestedManyWithoutOrderInput
@@ -308,6 +321,7 @@ export type OrderUncheckedCreateInput = {
   status?: boolean
   draft?: boolean
   name?: string | null
+  payment?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrderInput
@@ -318,6 +332,7 @@ export type OrderUpdateInput = {
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payment?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ItemUpdateManyWithoutOrderNestedInput
@@ -329,6 +344,7 @@ export type OrderUncheckedUpdateInput = {
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payment?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrderNestedInput
@@ -340,6 +356,7 @@ export type OrderCreateManyInput = {
   status?: boolean
   draft?: boolean
   name?: string | null
+  payment?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -349,6 +366,7 @@ export type OrderUpdateManyMutationInput = {
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payment?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -359,6 +377,7 @@ export type OrderUncheckedUpdateManyInput = {
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payment?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -369,6 +388,7 @@ export type OrderCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   draft?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  payment?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -384,6 +404,7 @@ export type OrderMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   draft?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  payment?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -394,6 +415,7 @@ export type OrderMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   draft?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  payment?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -431,6 +453,7 @@ export type OrderCreateWithoutItemsInput = {
   status?: boolean
   draft?: boolean
   name?: string | null
+  payment?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -441,6 +464,7 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   status?: boolean
   draft?: boolean
   name?: string | null
+  payment?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -466,6 +490,7 @@ export type OrderUpdateWithoutItemsInput = {
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payment?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -476,6 +501,7 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payment?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -517,6 +543,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   status?: boolean
   draft?: boolean
   name?: boolean
+  payment?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
@@ -529,6 +556,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   status?: boolean
   draft?: boolean
   name?: boolean
+  payment?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["order"]>
@@ -539,6 +567,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   status?: boolean
   draft?: boolean
   name?: boolean
+  payment?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["order"]>
@@ -549,11 +578,12 @@ export type OrderSelectScalar = {
   status?: boolean
   draft?: boolean
   name?: boolean
+  payment?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "table" | "status" | "draft" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "table" | "status" | "draft" | "name" | "payment" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
@@ -572,6 +602,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     status: boolean
     draft: boolean
     name: string | null
+    payment: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["order"]>
@@ -1003,6 +1034,7 @@ export interface OrderFieldRefs {
   readonly status: Prisma.FieldRef<"Order", 'Boolean'>
   readonly draft: Prisma.FieldRef<"Order", 'Boolean'>
   readonly name: Prisma.FieldRef<"Order", 'String'>
+  readonly payment: Prisma.FieldRef<"Order", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Order", 'DateTime'>
 }

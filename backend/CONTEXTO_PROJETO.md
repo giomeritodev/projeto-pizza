@@ -23,13 +23,16 @@ O projeto expõe todos os recursos através de um conjunto de rotas REST organiz
 | DELETE | `/product/:id` | `isAuthenticated`, `isAdmin` | `DeleteProductController` → `DeleteProductService` | Path param `id`. Marca produto como deletado/habilita? (ou remove). |
 | GET    | `/category/product` | `isAuthenticated` | `ListProductsByCategoryController` → `ListProductsByCategoryService` | Query: `category_id`. Retorna produtos habilitados de uma categoria. |
 | POST   | `/order` | `isAuthenticated` | `CreateOrderController` → `CreateOrderService` | Body: `table`, `name?`. Cria pedido em rascunho. |
-| GET    | `/orders` | `isAuthenticated` | `ListOrderController` → `ListOrderService` | Lista pedidos (filtro interno por status/draft). |
+| GET    | `/orders` | `isAuthenticated` | `ListOrderController` → `ListOrderService` | Lista pedidos (filtros internos por `draft` e opcional `payment`). Por padrão traz apenas `draft=false` (pedidos enviados); adicionar `?payment=false` ou `?payment=true` filtra por forma de pagamento. |
 | DELETE | `/order` | `isAuthenticated` | `DeleteOrderController` → `DeleteOrderService` | Query: `order_id`. Exclui pedido completo. |
 | POST   | `/order/add` | `isAuthenticated` | `AddItemOrderController` → `AddItemOrderService` | Body: `order_id`, `product_id`, `amount`. Adiciona item a pedido. |
 | DELETE | `/order/remove` | `isAuthenticated` | `RemoveItemOrderController` → `RemoveItemOrderService` | Query: `item_id`. Remove item de pedido. |
 | GET    | `/order/detail` | `isAuthenticated` | `OrderDetailController` → `OrderDetailService` | Query: `order_id`. Retorna pedido com itens e produtos. |
 | PUT    | `/order/send` | `isAuthenticated` | `SendOrderController` → `SendOrderService` | Body: `order_id`. Marca pedido como enviado (`draft = false`). |
 | PUT    | `/order/finish` | `isAuthenticated` | `FinishOrderController` → `FinishOrderService` | Body: `order_id`. Marca pedido como pronto (`status = true`). |
+| PUT    | `/order/payment` | `isAuthenticated`, `isAdmin` | `UpdatePaymentController` → `UpdatePaymentOrderService` | Body: `order_id`, `payment` (boolean). Atualiza campo de pagamento. |
+| GET    | `/orders/by-table` | `isAuthenticated` | `ListOrdersByTableController` → `ListOrdersByTableService` | Lista pedidos prontos (status=true, payment=false) agrupados por mesa com totais. |
+| PUT    | `/orders/payment/by-table` | `isAuthenticated`, `isAdmin` | `UpdatePaymentByTableController` → `UpdatePaymentByTableService` | Body: `table`, `payment` (boolean). Atualiza payment de todas as orders prontas da mesa e retorna cupom. |
 
 > **Observação:** todas as rotas que recebem dados via `body`, `query` ou `params` são validadas usando schemas Zod (`validateSchema`).
 

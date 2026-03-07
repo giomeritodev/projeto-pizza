@@ -3,7 +3,8 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  // generate inside the src folder so the TS compiler will pick it up automatically
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -58,11 +59,12 @@ model Product {
 }
 
 model Order {
-  id     Int     @id @default(autoincrement())
-  table  Int
-  status Boolean @default(false) //False = Pendente, True = Pronto
-  draft  Boolean @default(true) //False = Ainda é rascunho, True = Pedido enviado para producao
-  name   String?
+  id      Int     @id @default(autoincrement())
+  table   Int
+  status  Boolean @default(false) //False = Pendente, True = Pronto
+  draft   Boolean @default(true) //False = Ainda é rascunho, True = Pedido enviado para producao
+  name    String?
+  payment Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

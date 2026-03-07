@@ -1,5 +1,5 @@
 "use client"
-import { LogOut, Menu, Package, ShoppingCart, Tags } from "lucide-react"
+import { LogOut, Menu, Package, ShoppingCart, Tags, CreditCard } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
@@ -24,6 +24,11 @@ const menuItems = [
         title: "Categorias",
         href: "/dashboard/categories",
         icon: Tags
+    },
+    {
+        title: "Pagamento",
+        href: "/dashboard/payment",
+        icon: CreditCard
     }
 ]
 

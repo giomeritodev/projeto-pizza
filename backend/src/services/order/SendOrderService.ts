@@ -29,6 +29,7 @@ class SendOrderService {
                     name: true,
                     draft: true,
                     status: true,
+                    payment: true,
                     createdAt: true,
 
                 }

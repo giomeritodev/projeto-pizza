@@ -22,6 +22,7 @@ import { listProductsByCategorySchema } from "./schemas/listProductsByCategorySc
 import { CreateOrderController } from "./controllers/order/CreateOrderController"
 import { createOrderSchema } from "./schemas/createOrderSchema"
 import { ListOrderController } from "./controllers/order/ListOrderController"
+import { listOrderSchema } from "./schemas/listOrderSchema"
 import { AddItemOrderController } from "./controllers/order/AddItemOrderController"
 import { addItemOrderSchema } from "./schemas/addItemOrderSchema"
 import { RemoveItemOrderController } from "./controllers/order/RemoveItemOrderController"
@@ -32,8 +33,13 @@ import { SendOrderController } from "./controllers/order/SendOrderController"
 import { sendOrderSchema } from "./schemas/sendOrderSchema"
 import { FinishOrderController } from "./controllers/order/FinishOrderController"
 import { finishOrderSchema } from "./schemas/finishOrderSchema"
+import { updatePaymentSchema } from "./schemas/updatePaymentSchema"
 import { DeleteOrderController } from "./controllers/order/DeleteOrderController"
+import { UpdatePaymentController } from "./controllers/order/UpdatePaymentController"
 import { deleteOrderSchema } from "./schemas/deleteOrderSchema"
+import { ListOrdersByTableController } from "./controllers/order/ListOrdersByTableController"
+import { UpdatePaymentByTableController } from "./controllers/order/UpdatePaymentByTableController"
+import { updatePaymentByTableSchema } from "./schemas/updatePaymentByTableSchema"
 
 const router = Router()
 const upload = multer(uploadConfig)
@@ -55,7 +61,7 @@ router.get("/category/product", isAuthenticated, validateSchema(listProductsByCa
 
 //Rotas de Orders
 router.post("/order", isAuthenticated, validateSchema(createOrderSchema), new CreateOrderController().handle)
-router.get("/orders", isAuthenticated, new ListOrderController().handle)
+router.get("/orders", isAuthenticated, validateSchema(listOrderSchema), new ListOrderController().handle)
 router.delete("/order", isAuthenticated, validateSchema(deleteOrderSchema), new DeleteOrderController().handle)
 
 //Adicionar items a uma order
@@ -67,6 +73,13 @@ router.get("/order/detail", isAuthenticated, validateSchema(orderDetailSchema), 
 
 router.put("/order/send", isAuthenticated, validateSchema(sendOrderSchema), new SendOrderController().handle)
 router.put("/order/finish", isAuthenticated, validateSchema(finishOrderSchema), new FinishOrderController().handle)
+
+// altera o campo `payment` de um pedido; apenas ADMIN pode executar
+router.put("/order/payment", isAuthenticated, isAdmin, validateSchema(updatePaymentSchema), new UpdatePaymentController().handle)
+
+// Rotas para pagamento por mesa
+router.get("/orders/by-table", isAuthenticated, new ListOrdersByTableController().handle)
+router.put("/orders/payment/by-table", isAuthenticated, isAdmin, validateSchema(updatePaymentByTableSchema), new UpdatePaymentByTableController().handle)
 
 
 

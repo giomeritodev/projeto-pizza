@@ -1,23 +1,37 @@
-import { th } from "zod/v4/locales";
 import { prisma } from "../../prisma";
 
 interface ListOrderServiceProps {
     draft?: string;
+    payment?: string;
 }
 
 class ListOrderService {
-    async execute({ draft }: ListOrderServiceProps) {
+    async execute({ draft, payment }: ListOrderServiceProps) {
         try {
+            // build dynamic where clause so we can optionally filter by draft and/or payment
+            const whereClause: any = {}
+
+            if (draft !== undefined) {
+                // explicit query param provided
+                whereClause.draft = draft === "true";
+            } else {
+                // default behaviour from before: only non‑draft orders
+                whereClause.draft = false;
+            }
+
+            if (payment !== undefined) {
+                whereClause.payment = payment === "true";
+            }
+
             const orders = await prisma.order.findMany({
-                where: {
-                    draft: draft === "true" ? true : false,
-                },
+                where: whereClause,
                 select: {
                     id: true,
                     table: true,
                     name: true,
                     status: true,
                     draft: true,
+                    payment: true,
                     createdAt: true,
                     items: {
                         select: {
