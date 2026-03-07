@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { apiClient } from "@/lib/api"
 import { FormatPrice } from "@/lib/format"
-import { Receipt } from "lucide-react"
+import { Receipt, RefreshCcw } from "lucide-react"
 import { TableOrder, ReceiptData } from "@/lib/types"
 
 interface PaymentPageProps {
@@ -20,6 +20,7 @@ export default function PaymentPage({ token }: PaymentPageProps) {
 
     const fetchTables = async () => {
         try {
+            setLoading(true)
             const response = await apiClient<TableOrder[]>("/orders/by-table", {
                 token: token
             })
@@ -88,10 +89,19 @@ export default function PaymentPage({ token }: PaymentPageProps) {
     }
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold text-white">Pagamento por Mesa</h1>
-                <p className="text-gray-300">Gerencie pagamentos das mesas prontas</p>
+        <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold text-white">Pagamento por Mesa</h1>
+                    <p className="text-gray-300">Gerencie pagamentos das mesas prontas</p>
+                </div>
+                <Button
+                    className="bg-brand-primary text-white font-bold hover:bg-brand-primary"
+                    onClick={fetchTables}
+                >
+                    <RefreshCcw className="w-5 h-5" />
+                </Button>
+
             </div>
 
             {loading ? (
