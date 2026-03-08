@@ -40,6 +40,9 @@ import { deleteOrderSchema } from "./schemas/deleteOrderSchema"
 import { ListOrdersByTableController } from "./controllers/order/ListOrdersByTableController"
 import { UpdatePaymentByTableController } from "./controllers/order/UpdatePaymentByTableController"
 import { updatePaymentByTableSchema } from "./schemas/updatePaymentByTableSchema"
+import { ReportSalesController } from "./controllers/report/ReportSalesController"
+import { ReportUserSalesController } from "./controllers/report/ReportUserSalesController"
+import { GeneratePdfReportController } from "./controllers/report/GeneratePdfReportController"
 
 const router = Router()
 const upload = multer(uploadConfig)
@@ -80,6 +83,11 @@ router.put("/order/payment", isAuthenticated, isAdmin, validateSchema(updatePaym
 // Rotas para pagamento por mesa
 router.get("/orders/by-table", isAuthenticated, new ListOrdersByTableController().handle)
 router.put("/orders/payment/by-table", isAuthenticated, isAdmin, validateSchema(updatePaymentByTableSchema), new UpdatePaymentByTableController().handle)
+
+// Rotas de Relatórios
+router.get("/report/sales", isAuthenticated, isAdmin, new ReportSalesController().handle)
+router.get("/report/user-sales", isAuthenticated, isAdmin, new ReportUserSalesController().handle)
+router.get("/report/pdf", isAuthenticated, isAdmin, new GeneratePdfReportController().handle)
 
 
 
